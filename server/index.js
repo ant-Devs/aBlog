@@ -3,18 +3,14 @@ const express = require("express");
 const { default: mongoose } = require("mongoose");
 const app = express();
 
+// routes
+const homeRoute = require("./routes/pages/home.page")
+const api = require("./routes/api/index");
+
 app.use(express.json());
+app.use("/", homeRoute);
+app.use("/api/v1/", api)
 
-//home route;
-app.get("/", async (req, res) => {
-  console.log(req.url);
-  res.json({res: "200 Welcome Home"});
-})
-
-app.get("/blogs", (req, res) => {
-  console.log(req.url);
-  res.send("all blogs");
-})
 
 const PORT = process.env.PORT;
 
@@ -22,8 +18,8 @@ const PORT = process.env.PORT;
   await mongoose.connect("mongodb://127.0.0.1")
   console.log("Connected to database");
 
-  app.listen(PORT, ()  => {
-    console.log("Server is running on port\n", PORT);
+  app.listen(PORT, () => {
+    console.log(`Server is running on port ${PORT}\n`);
   })
 })();
 
