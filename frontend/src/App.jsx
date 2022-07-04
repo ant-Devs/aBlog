@@ -1,13 +1,21 @@
-import './App.css';
-import EditBlog from "./pages/EditBlog"
+import { BrowserRouter, Routes, Route } from "react-router-dom"
+import "./App.css";
+import EditBlog from "./pages/EditBlog";
+import Home from "./pages/Home";
+import Blog from "./pages/Blog";
 
 function App() {
   return (
-    <div className="App ">
-      <EditBlog />
-    </div >
-  )
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="blog/:blogId" element={<Blog />} />
+        <Route path="edit/:blogId" element={<EditBlog />} />
+      </Routes>
+    </BrowserRouter>
+
+    
+  );
 }
 
 export default App;
-
