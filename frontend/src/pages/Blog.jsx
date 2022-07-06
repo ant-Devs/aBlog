@@ -1,12 +1,16 @@
 import Footer from "../components/footer"
 
+import { useParams } from "react-router-dom"
+
 export default function Blog() {
+  const params = useParams();
+
   return (
     <>
 
       <article className=" mx-auto blog">
         <header className="flex mb-14 flex-col justify-center items-center text-center px-4 py-24 min-h-[20rem] h-[70vh] max-h-[40rem] text-gray-200 bg-gray-800">
-          <h2 className="font-semibold text-5xl md:text-7xl w-11/12 max-w-[53rem]">Title of the blog goes here where it belongs</h2>
+          <h2 className="font-semibold text-5xl md:text-7xl w-11/12 max-w-[53rem]">Title of blog with id: {params.blogId}</h2>
         </header>
         <section id="body" className="text-xl flex flex-col mx-auto w-10/12 max-w-[44rem]">
           <h3>The quick brow</h3>

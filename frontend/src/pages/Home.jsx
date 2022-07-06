@@ -6,8 +6,10 @@ import Footer from "../components/footer";
 
 export default function Home() {
   async function getBlogs() {
-    axios
+    const data = await axios.get("http://localhost:3001/api/v1/home")
+    console.log(data);
   }
+  getBlogs();
   return (
     <>
       <div className="home flex flex-col gap-2">
