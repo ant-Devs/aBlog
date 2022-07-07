@@ -9,7 +9,7 @@ router.route("/home").get(async (req, res) => {
   res.json(blogs)
 })
 
-router.route("/blog:id").get(async (req, res) => {
+router.route("/blogs/:id").get(async (req, res) => {
   res.json(await getBlog(req.params.id))
 })
 

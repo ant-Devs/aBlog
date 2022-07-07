@@ -1,4 +1,7 @@
-import { useRef, useState } from "react";
+import { useRef, useState, useEffect } from "react";
+import { useParams } from "react-router-dom";
+import { AiOutlineSave } from "react-icons/ai"
+import { MdOutlineCancel } from "react-icons/md"
 import ReactQuill from "react-quill";
 import Footer from "../components/footer";
 
@@ -8,6 +11,7 @@ import "react-quill/dist/quill.snow.css";
 import modules from "../components/editor";
 
 import "../styles/edit.css";
+import axios from "axios";
 
 export default function EditBlog() {
   const bodyRef = useRef();
@@ -15,18 +19,35 @@ export default function EditBlog() {
   const inputRef = useRef();
   const [backgroundImg, setBg] = useState("");
 
-  async function changeBg(file){ 
+  async function changeBg(file) {
     const reader = new FileReader();
-    if(file){ 
+    if (file) {
       console.log("file is found");
       reader.readAsDataURL(file);
-      reader.onloadend = function() {
+      reader.onloadend = function () {
         setBg(reader.result)
       }
     }
-    
+
     console.log(backgroundImg);
   }
+
+  const params = useParams();
+
+  const [blog, setBlog] = useState({});
+  useEffect(() => {
+    if (params.blogId) {
+
+      (async function () {
+        try {
+          let blog = await axios.get(`http://localhost:3001/api/v1/blogs/${params.blogId}`)
+          setBlog(blog?.data[0])
+        } catch (error) {
+          console.error(error)
+        }
+      })()
+    }
+  }, [])
 
   return (
     <>
@@ -43,7 +64,7 @@ export default function EditBlog() {
           contentEditable="true"
           ref={titleRef}
         >
-          Title of the blog goes here where it belongs
+          {blog?.title || "Title of the blog goes here where it belongs"}
         </h2>
 
         <button
@@ -53,7 +74,7 @@ export default function EditBlog() {
           }}
         >
           <input
-            ref={inputRef} 
+            ref={inputRef}
             onChange={(e) => {
               changeBg(e.target.files[0]);
             }}
@@ -83,8 +104,14 @@ export default function EditBlog() {
           ref={bodyRef}
           theme="snow"
           modules={modules}
+          value={blog?.body}
           placeholder="Type the body here:"
         />
+        <div className="mt-4  flex  justify-end gap-3 ">
+          <button className="btn rounded px-4 py-1 bg-gray-800 text-gray-50 flex items-center gap-2"><AiOutlineSave />Save</button>
+          <button className="btn rounded px-4 py-1 bg-orange-300 text-orange-900 flex items-center gap-2"><MdOutlineCancel />Cancel</button>
+
+        </div>
       </section>
 
       <Footer />
