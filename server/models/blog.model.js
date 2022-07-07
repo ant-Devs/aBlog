@@ -4,7 +4,7 @@ const articleSchema = mongoose.Schema({
   body: {type: String, required: true},
   dateCreated: {type: Date, default: Date.now()},
   author: {type: String, default: "anonymous"},
-  assets: {type: String}
+  assets: {type: Object}
 }, {collection: "articles"})
 
 

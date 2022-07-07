@@ -1,7 +1,7 @@
 import { useRef, useState, useEffect } from "react";
-import { useParams } from "react-router-dom";
-import { AiOutlineSave } from "react-icons/ai"
-import { MdOutlineCancel } from "react-icons/md"
+import { useParams, useNavigate } from "react-router-dom";
+import { AiOutlineSave } from "react-icons/ai";
+import { MdOutlineCancel } from "react-icons/md";
 import ReactQuill from "react-quill";
 import Footer from "../components/footer";
 
@@ -25,11 +25,9 @@ export default function EditBlog() {
       console.log("file is found");
       reader.readAsDataURL(file);
       reader.onloadend = function () {
-        setBg(reader.result)
-      }
+        setBg(reader.result);
+      };
     }
-
-    console.log(backgroundImg);
   }
 
   const params = useParams();
@@ -37,26 +35,49 @@ export default function EditBlog() {
   const [blog, setBlog] = useState({});
   useEffect(() => {
     if (params.blogId) {
-
       (async function () {
         try {
-          let blog = await axios.get(`http://localhost:3001/api/v1/blogs/${params.blogId}`)
-          setBlog(blog?.data[0])
+          let blog = await axios.get(
+            `http://localhost:3001/api/v1/blogs/${params.blogId}`
+          );
+          setBlog(blog?.data[0]);
         } catch (error) {
-          console.error(error)
+          console.error(error);
         }
-      })()
+      })();
     }
-  }, [])
+  }, []);
+
+  const navigate = useNavigate();
+  async function handleSave() {
+    // submit all data to api
+    // all data:
+    try {
+      const body = bodyRef.current.state.value,
+        title = titleRef.current.textContent;
+
+      const res = await axios.patch(
+        `http://localhost:3001/api/v1/edit/${params.blogId}`,
+        { body, title }
+      ); 
+      // navigate to blog page
+        navigate(`/blog/${params.blogId}`)
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  function handleCancel() {
+    // navigate to blog page
+    navigate("/")
+  }
 
   return (
     <>
       <header
-        style={
-          {
-            "backgroundImage": `url("${backgroundImg}")`
-          }
-        }
+        style={{
+          backgroundImage: `url("${backgroundImg}")`,
+        }}
         className="relative flex mb-14 flex-col justify-center items-center text-center px-4 py-24 min-h-[20rem] h-[70vh] max-h-[40rem] text-gray-200 bg-gray-800"
       >
         <h2
@@ -66,35 +87,6 @@ export default function EditBlog() {
         >
           {blog?.title || "Title of the blog goes here where it belongs"}
         </h2>
-
-        <button
-          className="absolute bottom-10 active:scale-90 right-40 btn bg-white hover:bg-gray-100 text-gray-800 font-semibold py-2 px-4 border border-gray-400 rounded text-3xl"
-          onClick={() => {
-            inputRef.current.click();
-          }}
-        >
-          <input
-            ref={inputRef}
-            onChange={(e) => {
-              changeBg(e.target.files[0]);
-            }}
-            className="hidden"
-            type="file"
-            accept="image/jpeg, image/png"
-          />
-
-          <svg
-            stroke="currentColor"
-            fill="currentColor"
-            strokeWidth="0"
-            viewBox="0 0 1024 1024"
-            height="1em"
-            width="1em"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path d="M928 160H96c-17.7 0-32 14.3-32 32v640c0 17.7 14.3 32 32 32h832c17.7 0 32-14.3 32-32V192c0-17.7-14.3-32-32-32zm-40 632H136v-39.9l138.5-164.3 150.1 178L658.1 489 888 761.6V792zm0-129.8L664.2 396.8c-3.2-3.8-9-3.8-12.2 0L424.6 666.4l-144-170.7c-3.2-3.8-9-3.8-12.2 0L136 652.7V232h752v430.2zM304 456a88 88 0 1 0 0-176 88 88 0 0 0 0 176zm0-116c15.5 0 28 12.5 28 28s-12.5 28-28 28-28-12.5-28-28 12.5-28 28-28z"></path>
-          </svg>
-        </button>
       </header>
       <section
         id="body"
@@ -108,9 +100,22 @@ export default function EditBlog() {
           placeholder="Type the body here:"
         />
         <div className="mt-4  flex  justify-end gap-3 ">
-          <button className="btn rounded px-4 py-1 bg-gray-800 text-gray-50 flex items-center gap-2"><AiOutlineSave />Save</button>
-          <button className="btn rounded px-4 py-1 bg-orange-300 text-orange-900 flex items-center gap-2"><MdOutlineCancel />Cancel</button>
-
+          <button
+            onClick={handleCancel}
+            className="btn rounded px-4 py-1 bg-orange-300 text-orange-900 flex items-center gap-2"
+          >
+            <MdOutlineCancel />
+            Cancel
+          </button>
+          <button
+            onClick={() => {
+              handleSave();
+            }}
+            className="btn active:opacity-95 rounded px-4 py-1 bg-gray-800 text-gray-50 flex items-center gap-2"
+          >
+            <AiOutlineSave />
+            Save
+          </button>
         </div>
       </section>
 

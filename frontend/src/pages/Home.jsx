@@ -5,6 +5,8 @@ import axios from "axios"
 import Footer from "../components/footer";
 import { Link } from "react-router-dom";
 import {FiEdit} from "react-icons/fi"
+import ReactDom from "react-dom/client";
+import React from "react";
 
 export default function Home() {
 
@@ -13,7 +15,7 @@ export default function Home() {
   async function getBlogs() {
     try {
       const data = await axios.get("http://localhost:3001/api/v1/home")
-      setBlogs(data.data);
+      setBlogs(data.data); 
     }
     catch (err) {
       console.error(err);
@@ -31,13 +33,12 @@ export default function Home() {
         <section className="blogs flex flex-col gap-12 justify-top items-center mt-14 border-yellow-800 max-w-2xl mx-auto">
           {
             blogs.map((blog) => {
-              return <>
-                <figure className="flex gap-3">
+              return <figure key={blog._id} className="flex gap-3">
                   <figcaption className="w-8/12 flex flex-col justify-between">
                     <Link to={`blog/${blog._id}`}>
                       <div>
                         <h3 className="text-2xl font-semibold">{blog?.title}</h3>
-                        <p>{blog.body?.substr(0, 160) + "..."}</p>
+                        <p id="body">{ReactDom.createRoot(document.createElement("div")).render(blog?.body)}</p>
                       </div>
                     </Link>
                     <div className="w-5/6 flex justify-between gap-5 text-sm text-gray-700">
@@ -53,10 +54,9 @@ export default function Home() {
                     </div>
                   </figcaption>
                   <div className="bg-gray-400 w-5/12 min-h-[9rem]">
-                    <img src="" alt="" srcset="" />
+                    <img src="" alt="" />
                   </div>
-                </figure>
-              </>
+                </figure> 
             })
           }
         </section>
