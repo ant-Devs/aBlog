@@ -54,14 +54,26 @@ export default function EditBlog() {
     // all data:
     try {
       const body = bodyRef.current.state.value,
-        title = titleRef.current.textContent;
-
+      title = titleRef.current.textContent;
+      
+      if(params.blogId){
       const res = await axios.patch(
         `http://localhost:3001/api/v1/edit/${params.blogId}`,
         { body, title }
       ); 
       // navigate to blog page
         navigate(`/blog/${params.blogId}`)
+      }
+      else{
+        const res = await axios.post(
+          `http://localhost:3001/api/v1/new/`,
+          { body, title }
+        ); 
+        console.log(res);
+        // navigate to blog page
+          navigate(`/blog/${res.data._id}`)
+        // }
+      }
     } catch (error) {
       console.log(error);
     }

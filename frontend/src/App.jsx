@@ -5,6 +5,8 @@ import Home from "./pages/Home";
 import Blog from "./pages/Blog";
 import ErrorPage from './pages/ErrorPage';
 
+
+
 function App() {
   return (
     <BrowserRouter>
@@ -12,6 +14,7 @@ function App() {
         <Route path="/" element={<Home />} />
         <Route path="blog/:blogId" element={<Blog />} />
         <Route path="edit/:blogId" element={<EditBlog />} />
+        <Route path="create" element={<EditBlog />} />
         <Route path='*' element={<ErrorPage />} />
       </Routes>
     </BrowserRouter>
