@@ -1,16 +1,18 @@
 const express = require('express');
 const router = express.Router();
 
-const authorController = require("../controllers/author.controller")
+const {getAllAuthors} = require("../controllers/author.controller")
 
-router.route("/", async (req, res) => {
+router.route("/partial:authorId").get(async (req, res) => {
     // use author controller;
-    console.log(await authorController())
-    res.send("Full author details"); 
+    const author = await getAllAuthors(req.params.authorId, res)
+    console.log(author)
+    res.send("Partial author details"); 
 })
 
-router.route("/:authorId", (req, res) => {
+router.route("/:authorId").get(async (req, res) => {
     // use author controller
+    getSingleAuthor(req.params.authorId, res)
     res.send("Entire author details");
 })
 
